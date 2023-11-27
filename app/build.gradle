@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'sas.search_products'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "sas.search_products"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -26,9 +26,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enable = true
+    }
 }
 
 dependencies {
+    implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    implementation 'com.squareup.picasso:picasso:2.8'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
