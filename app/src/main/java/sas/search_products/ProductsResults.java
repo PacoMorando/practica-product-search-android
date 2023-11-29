@@ -19,7 +19,7 @@ public class ProductsResults {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Product product : this.products) {
-            stringBuilder.append(product.getTitle() + "\n");
+            stringBuilder.append(product.getThumbnail() + "\n");
         }
         return stringBuilder.toString();
     }
