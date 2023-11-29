@@ -3,16 +3,9 @@ package sas.search_products;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.SearchView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +17,7 @@ import sas.search_products.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private final ProductsResultsFragment productsResultsFragment = new ProductsResultsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(this.binding.getRoot());
         setSupportActionBar(this.binding.mainToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                //.add(R.id.products_results_fragment, ProductsResultsFragment.class, null) Probar como funciona este
+                .replace(R.id.products_results_fragment, productsResultsFragment, null)
+                .commit();
     }
 
     private void searchProduct(String product) {
@@ -57,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUsersRecyclerView(ArrayList<Product> products) {
         ProductsRecyclerAdapter productsRecyclerAdapter = new ProductsRecyclerAdapter(products);
-        this.binding.productsResView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        this.binding.productsResView.setAdapter(productsRecyclerAdapter);
+        this.binding.productsResViewMain.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        this.binding.productsResViewMain.setAdapter(productsRecyclerAdapter);
     }
 
     private void setDataBinding() {
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
         this.binding.mainToolBar.setNavigationOnClickListener(view -> {
+            this.productsResultsFragment.setTestText("Se ha cambiado el texto desde el main");
             System.out.println("Picaste la flechita");
         });
 
@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 System.out.println("onQueryTextSubmit METHOD Y ESCRIBISTE: " + s);
-                searchProduct(s);
+                //searchProduct(s);
+                productsResultsFragment.searchProduct(s);
                 return false;
             }
 

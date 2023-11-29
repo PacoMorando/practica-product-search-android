@@ -31,6 +31,9 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
     @Override
     public void onBindViewHolder(@NonNull ProductsRecyclerAdapter.ViewHolder holder, int position) {
         holder.setItemProduct(this.products.get(position));
+        holder.itemView.setOnClickListener(view -> {
+            System.out.println("Picaste: " + holder.title.getText());
+        });
     }
 
     @Override
@@ -60,16 +63,13 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
             Picasso.get().load(product.getThumbnail()).into(this.thumbnail, new Callback() {
                 @Override
                 public void onSuccess() {
-                    System.out.println("SE CARGO CORRECTAMENTE LA IMAGEN");
+                    System.out.println("loaded image");
                 }
-
                 @Override
                 public void onError(Exception e) {
-                    System.out.println("NO CARGO");
                     e.printStackTrace();
                 }
             });
-           System.out.println(product.getThumbnail());
             this.price.setText(product.getPrice());
             this.title.setText(product.getTitle());
             this.stateName.setText(product.getAddress().getStateName());
