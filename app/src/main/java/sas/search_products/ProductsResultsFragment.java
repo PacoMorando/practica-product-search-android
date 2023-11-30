@@ -19,9 +19,15 @@ import sas.search_products.databinding.FragmentProductsResultsBinding;
 
 public class ProductsResultsFragment extends Fragment {
     private FragmentProductsResultsBinding binding;
+    private ProductsRecyclerAdapter productsRecyclerAdapter;
+    private final ProductsRecyclerAdapter.OnItemClickListener itemClickListener;
+
+
+    public ProductsResultsFragment(ProductsRecyclerAdapter.OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     @Override
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -29,6 +35,10 @@ public class ProductsResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = FragmentProductsResultsBinding.inflate(inflater, container, false);
+        this.productsRecyclerAdapter = new ProductsRecyclerAdapter();
+        this.productsRecyclerAdapter.setItemClickListener(this.itemClickListener);
+        this.binding.productsResView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.binding.productsResView.setAdapter(this.productsRecyclerAdapter);
         return this.binding.getRoot();
     }
 
@@ -41,7 +51,8 @@ public class ProductsResultsFragment extends Fragment {
                     ProductsResults productsResults = response.body();
                     List<Product> products = productsResults != null ? productsResults.getProducts() : null;
                     if (products != null) {
-                        setUsersRecyclerView((ArrayList<Product>) products);
+                        productsRecyclerAdapter.setProducts((ArrayList<Product>) products);
+                        productsRecyclerAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -51,12 +62,6 @@ public class ProductsResultsFragment extends Fragment {
                 System.out.println("Fallo la conexion");
             }
         });
-    }
-
-    private void setUsersRecyclerView(ArrayList<Product> products) {
-        ProductsRecyclerAdapter productsRecyclerAdapter = new ProductsRecyclerAdapter(products);
-        this.binding.productsResView.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.binding.productsResView.setAdapter(productsRecyclerAdapter);
     }
 
     public void setTestText(String text) {

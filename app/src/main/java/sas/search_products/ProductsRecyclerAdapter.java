@@ -15,11 +15,17 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecyclerAdapter.ViewHolder> {
-    private final ArrayList<Product> products;
+    private  OnItemClickListener itemClickListener;
 
-    public ProductsRecyclerAdapter(ArrayList<Product> products) {
-        this.products = products;
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
+
+    private ArrayList<Product> products = new ArrayList<>();
+
+  /*  public ProductsRecyclerAdapter( OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }*/
 
     @NonNull
     @Override
@@ -32,7 +38,8 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
     public void onBindViewHolder(@NonNull ProductsRecyclerAdapter.ViewHolder holder, int position) {
         holder.setItemProduct(this.products.get(position));
         holder.itemView.setOnClickListener(view -> {
-            System.out.println("Picaste: " + holder.title.getText());
+            System.out.println("Picaste: " + holder.id);
+            this.itemClickListener.onClick(holder.id);
         });
     }
 
@@ -41,7 +48,12 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
         return products.size();
     }
 
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private String id;
         private ImageView thumbnail;
         private TextView price;
         private TextView title;
@@ -60,6 +72,7 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
         }
 
         public void setItemProduct(Product product) {
+            this.id =  product.getId();
             Picasso.get().load(product.getThumbnail()).into(this.thumbnail, new Callback() {
                 @Override
                 public void onSuccess() {
@@ -74,5 +87,8 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
             this.title.setText(product.getTitle());
             this.stateName.setText(product.getAddress().getStateName());
         }
+    }
+    public interface OnItemClickListener{
+        void onClick(String itemId);
     }
 }
