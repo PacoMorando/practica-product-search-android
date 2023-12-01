@@ -1,6 +1,7 @@
 package sas.search_products;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,8 +9,9 @@ import android.widget.SearchView;
 
 import sas.search_products.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements ProductsRecyclerAdapter.OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements ProductsRecyclerAdapter.OnItemClickListener {
     private ActivityMainBinding binding;
+    private FragmentTransaction fragmentTransaction;
     private ProductsResultsFragment productsResultsFragment;
     private final ProductFragment productFragment = new ProductFragment();
 
@@ -20,14 +22,19 @@ public class MainActivity extends AppCompatActivity implements ProductsRecyclerA
         setContentView(this.binding.getRoot());
         setSupportActionBar(this.binding.mainToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.productsResultsFragment  = new ProductsResultsFragment(this);
+        this.productsResultsFragment = new ProductsResultsFragment(this);
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.setReorderingAllowed(true);
+        this.fragmentTransaction.replace(R.id.products_results_fragment, this.productsResultsFragment, null);
+        this.fragmentTransaction.commit();
 
 
-        getSupportFragmentManager().beginTransaction()
+        /*getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 //.add(R.id.products_results_fragment, ProductsResultsFragment.class, null) Probar como funciona este
                 .replace(R.id.products_results_fragment, this.productsResultsFragment, null)
-                .commit();
+                .commit();*/
+
     }
 
     private void setDataBinding() {
@@ -43,13 +50,23 @@ public class MainActivity extends AppCompatActivity implements ProductsRecyclerA
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
         this.binding.mainToolBar.setNavigationOnClickListener(view -> {
-            this.productsResultsFragment.setTestText("Se ha cambiado el texto desde el main");
+            if (!getSupportFragmentManager().getFragments().contains(this.productsResultsFragment)) {
+               /* getSupportFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.products_results_fragment, this.productsResultsFragment, null)
+                        .commit();*/
+                System.out.println("popBackStack()");
+                getSupportFragmentManager().popBackStack();
+            }
         });
 
         assert searchView != null;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                if (!getSupportFragmentManager().getFragments().contains(productsResultsFragment)) {
+                    getSupportFragmentManager().popBackStack();
+                }
                 productsResultsFragment.searchProduct(s);
                 return false;
             }
@@ -65,10 +82,17 @@ public class MainActivity extends AppCompatActivity implements ProductsRecyclerA
 
     @Override
     public void onClick(String itemId) {
+        System.out.println();
         this.productFragment.setProductId(itemId);
-        getSupportFragmentManager().beginTransaction()
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.products_results_fragment, this.productFragment, null);
+        this.fragmentTransaction.addToBackStack(null);// AL remplazar el fragment se agrega al que vamos a regresar
+        this.fragmentTransaction.commit();
+
+        /*getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(R.id.products_results_fragment, this.productFragment, null)
-                .commit();
+                .commit();*/
+
     }
 }

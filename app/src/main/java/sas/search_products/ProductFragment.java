@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,29 +33,27 @@ public class ProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = FragmentProductBinding.inflate(inflater, container, false);
-        this.binding.productId.setText(this.itemId);
-        //this.setProductDetails();
         this.getProductDetails();
         return this.binding.getRoot();
     }
 
-    private void setProductDetails() {
-        //this.getProductDetails();
-
-    }
-
     private void getProductDetails() {
         Call<ProductDetail> call = ProductApiService.ProductsApi.getInstance().getProductDetail(this.itemId);
-        call.enqueue(new Callback<ProductDetail>() {
+        call.enqueue(this.ProductDetailResponse());
+        Call<ProductDetail.Description> callDescription = ProductApiService.ProductsApi.getInstance().getProductDescription(this.itemId);
+        callDescription.enqueue(this.ProductDescription());
+    }
+
+    private Callback<ProductDetail> ProductDetailResponse(){
+        return new Callback<ProductDetail>() {
             @Override
             public void onResponse(Call<ProductDetail> call, Response<ProductDetail> response) {
                 if (response.isSuccessful()) {
                     ProductDetail productDetail = response.body();
-                    //List<Product> products = productproductDetail != null ? productproductDetail.getProducts() : null;
                     if (productDetail != null) {
-                        binding.productId.setText(productDetail.getId());
                         binding.productTitle.setText(productDetail.getTitle());
                         binding.productPrice.setText(productDetail.getPrice());
+                        Picasso.get().load(productDetail.getPictures().get(0).getUrl()).into(binding.productPicture);
                     }
                 }
             }
@@ -62,7 +62,26 @@ public class ProductFragment extends Fragment {
             public void onFailure(Call<ProductDetail> call, Throwable t) {
                 System.out.println("Fallo la conexion");
             }
-        });
+        };
+    }
+
+    private Callback<ProductDetail.Description> ProductDescription(){
+        return new Callback<ProductDetail.Description>() {
+            @Override
+            public void onResponse(Call<ProductDetail.Description> call, Response<ProductDetail.Description> response) {
+                if (response.isSuccessful()) {
+                    ProductDetail.Description productDescription = response.body();
+                    if (productDescription != null) {
+                        binding.productDescription.setText(productDescription.getPlain_text());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductDetail.Description> call, Throwable t) {
+                System.out.println("Fallo la conexion");
+            }
+        };
     }
 
     public void setProductId(String itemId){

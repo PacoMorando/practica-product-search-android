@@ -20,11 +20,15 @@ import sas.search_products.databinding.FragmentProductsResultsBinding;
 public class ProductsResultsFragment extends Fragment {
     private FragmentProductsResultsBinding binding;
     private ProductsRecyclerAdapter productsRecyclerAdapter;
-    private final ProductsRecyclerAdapter.OnItemClickListener itemClickListener;
+    private ProductsRecyclerAdapter.OnItemClickListener itemClickListener;
 
+    public ProductsResultsFragment() {
+    }
 
     public ProductsResultsFragment(ProductsRecyclerAdapter.OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+        this.productsRecyclerAdapter = new ProductsRecyclerAdapter();
+        this.productsRecyclerAdapter.setItemClickListener(this.itemClickListener);
     }
 
     @Override
@@ -35,8 +39,6 @@ public class ProductsResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = FragmentProductsResultsBinding.inflate(inflater, container, false);
-        this.productsRecyclerAdapter = new ProductsRecyclerAdapter();
-        this.productsRecyclerAdapter.setItemClickListener(this.itemClickListener);
         this.binding.productsResView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.binding.productsResView.setAdapter(this.productsRecyclerAdapter);
         return this.binding.getRoot();
@@ -65,6 +67,5 @@ public class ProductsResultsFragment extends Fragment {
     }
 
     public void setTestText(String text) {
-        this.binding.testFragment.setText(text);
     }
 }

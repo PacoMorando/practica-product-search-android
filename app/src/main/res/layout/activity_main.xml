@@ -31,7 +31,9 @@
                 android:theme="@style/Widget.MaterialComponents.Toolbar"
                 app:menu="@menu/main_head_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:title=" " />
+                app:titleCentered="true"
+                app:titleMarginTop="16dp"
+                app:title="Busca un producto"/>
 
 
         </com.google.android.material.appbar.AppBarLayout>
