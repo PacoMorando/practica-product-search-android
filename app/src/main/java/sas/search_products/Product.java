@@ -16,6 +16,8 @@ public class Product {
     private String price;
     @Json(name = "address")
     private Address address;
+    @Json(name = "official_store_name")
+    private String officialStoreName;
 
     public String getId() {
         return id;
@@ -39,6 +41,10 @@ public class Product {
 
     public Address getAddress() {
         return address;
+    }
+
+    public String getOfficialStoreName() {
+        return officialStoreName;
     }
 
     static class Address {

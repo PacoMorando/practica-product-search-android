@@ -57,7 +57,7 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
         private ImageView thumbnail;
         private TextView price;
         private TextView title;
-        private TextView stateName;
+        private TextView storeName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,7 +68,8 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
             this.thumbnail = itemView.findViewById(R.id.thumbnail);
             this.price = itemView.findViewById(R.id.price);
             this.title = itemView.findViewById(R.id.title);
-            this.stateName = itemView.findViewById(R.id.state_name);
+            this.storeName = itemView.findViewById(R.id.store_name);
+            //this.stateName = itemView.findViewById(R.id.state_name);
         }
 
         public void setItemProduct(Product product) {
@@ -85,7 +86,7 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
             });
             this.price.setText(product.getPrice());
             this.title.setText(product.getTitle());
-            this.stateName.setText(product.getAddress().getStateName());
+            this.storeName.setText(product.getOfficialStoreName());
         }
     }
     public interface OnItemClickListener{
